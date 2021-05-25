@@ -109,7 +109,20 @@
   ```
   - Can change the text and overwrite the file
   - We could rename fs as variable, but not as a module
-  - 
+  - #### __Personal Note__
+    - You can do ES Modules if you have a `package.json` with `"type": "module"` in the JSON
+  - #### Challenge 1: Append a message to notes.txt
+    - Use appendFileSync to append to the file
+    - Run the script
+    - Check your work by opening the file and viewing the appended text
+    - `/app.js`
+      ```js
+        import fs from 'fs'
+
+        // fs.writeFileSync(`notes.txt`, `My name is Corey`)
+
+        fs.appendFileSync(`notes.txt`, `My name is Corey\n`)
+      ```
 
 ### 010 - Importing Your Own Files
 
