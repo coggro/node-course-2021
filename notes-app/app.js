@@ -1,5 +1,7 @@
-import fs from 'fs'
+import validator from 'validator'
 
-// fs.writeFileSync(`notes.txt`, `My name is Corey`)
+import {getNotes} from './notes.js'
 
-fs.appendFileSync(`notes.txt`, `My name is Corey\n`)
+console.log(getNotes())
+
+console.log(validator.isURL(`coggro@gmail.com`))
