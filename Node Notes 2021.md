@@ -842,7 +842,38 @@ fs.writeFileSync(`notes.txt`, `This file was created by Node.js!`)
 
 ### 028 - Section Intro: Asynchronous Node.js
 
+- Node is async, non-blocking, event-driven
+- What do these mean?
+- We'll move on to next app and use location services and a weather API
+- We'll use Async JS all over the place
+
 ### 029 - Asynchronous Basics
+
+- Going to create our first async/non-blocking application
+- Starting new project in `/weather-app` directory with `app.js` file
+- `app.js`
+
+  ```js
+  console.log(`Starting`)
+
+  setTimeout(() => {
+    console.log(`Time Out 1`)
+  }, 2000)
+  // With just this, output is Starting/Stopping/Time Out 1
+  // setTimeOut is async, so it runs the rest of the sync code before
+  // going back to do callbacks
+
+  setTimeout(() => {
+    console.log(`Time Out 2`)
+  }, 0)
+  // With this added, output is Starting/Stopping/Time Out 2/Time Out 1
+  // They're still async, so the second one waits for callback also and then
+  // instantly fires - but not before the rest of the sync code
+
+  console.log(`Stopping`)
+  ```
+
+  zs
 
 ### 030 - Call Stack, Callback Queue, and Event Loop
 
@@ -868,27 +899,31 @@ fs.writeFileSync(`notes.txt`, `This file was created by Node.js!`)
 
 ### 041 - Bonus: HTTP Requests Without a Library
 
-### 042 -
+## Section 7: Web Severs
 
-### 043 -
+### 042 - Section Intro: Web Servers
 
-### 044 -
+### 043 - Hello Express!
 
-### 045 -
+### 044 - Serving up HTML and JSON
 
-### 046 -
+### 045 - Serving up Static Assets
 
-### 047 -
+### 046 - Serving Up CSS, JS, Images, and More
 
-### 048 -
+### 047 - Dynamic Pages with Templating
 
-### 049 -
+### 048 - Customizing the Views Directory
 
-### 050 -
+### 049 - Advanced Templating
 
-### 051 -
+### 050 - 404 Pages
 
-### 052 -
+### 051 - Styling the Application: Part I
+
+### 052 - Styling the Application: Part II
+
+## Section 8: Accessing API from Browser (Weather App)
 
 ### 053 -
 
