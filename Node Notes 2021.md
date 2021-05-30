@@ -39,6 +39,8 @@
 
 - A PDF reference eBook has info for every lesson
 
+---
+
 ## Section 2: Installing and Exploring Node.js
 
 ### 003 - Section Intro: Installing and Exploring Node.js
@@ -88,6 +90,8 @@
   console.log(`Welcome to the class!`)
   ```
 - Run with `node hello.js`
+
+---
 
 ## Section 3: Node.js Module System (Notes App)
 
@@ -277,6 +281,8 @@ fs.writeFileSync(`notes.txt`, `This file was created by Node.js!`)
 - We'll install `nodemon`, which restarts the app whenever we save changes and stops us from having to rerun the file every time to see changes
 - Doesn't get used in a project or added to .jsons
 - I've already done this. It's not that hard, and it is admittedly way useful
+
+---
 
 ## Section 4: File System and Command Line Args (Notes App)
 
@@ -810,6 +816,8 @@ fs.writeFileSync(`notes.txt`, `This file was created by Node.js!`)
 
 - Can remove getNotes
 
+---
+
 ## Section 5: Debugging Node.js (Notes App)
 
 ### 025 - Section Intro: Debugging Node.js
@@ -837,6 +845,8 @@ fs.writeFileSync(`notes.txt`, `This file was created by Node.js!`)
 
 - Look at error messages and learn to find errors.
 - I've been at this a while. I know how to do this.
+
+---
 
 ## Section 6: Asynchronous Node.js (Weather App)
 
@@ -873,13 +883,83 @@ fs.writeFileSync(`notes.txt`, `This file was created by Node.js!`)
   console.log(`Stopping`)
   ```
 
-  zs
-
 ### 030 - Call Stack, Callback Queue, and Event Loop
+
+- We had a lot of questions about how async actually works
+- Watch this one again after building Weather and have more experience
+- Call Stack, Node APIs, Callback Queue, and Call Stack work together to run Node
+  - Call Stack
+    - Simple data structure that tracks execution of the program by tracking programs currently running
+    - Stack trace shows call stack
+    - You can add an item on top and remove the top item, and that's it
+  - Node APIS
+    - Registers events from Node fxs and has a callback paired with it
+  - Callback Queue
+    - A line of callback fxs that are waiting to be called when the call stack is empty
+  - Event Loop
+    - Looks at the call stack and callback queue. If the stack is empty, it runs the Callback Queue
+- Basic Synchronous Code
+  - Running an app runs a main function to wrap normal code
+  - Statements run normally
+  - Functions get added to the call stack on top of main, and then get removed from the call stack
+  - Main finishes, call stack empties, program is done
+- Synchronous With More Functions
+  - Main function
+  - listLocations gets defined, but isn't called
+  - Var defined
+  - Function call goes on call stack, gets executed
+  - Function in function gets called, gets executed
+  - Inner fx gets taken off, followed by outer fxs in layers
+  - Loops put fx on and take them off as many times as necessary
+  - Once all fxs are done, main comes off stack, program ends.
+- Async Example
+  - This is the code we wrote before with timeouts
+  - Main gets called
+  - Log goes on, executes, and gets removed
+  - setTimeOut goes on, but is actually a Node API
+    - Wait 2 seconds,
+  - setTimeOut goes to Node API, allowing execution to continue
+    - JS is single-threaded, but Node uses multiple threads with C++ behind the scenes, so the rest of the app can run.
+  - setTimeOut runs again, goes to Node API
+  - 0 seconds STO goes to the callback queue
+  - main is still on the stack, so it continues to run
+  - Second log goes on, executes, and comes off
+  - main comes off. Normally, program finishes.
+  - Event loop puts 0 second STO on stack to execute and remove
+  - 2sSTO will then finish and go on the queue and stack, execute, and be removed
 
 ### 031 - Making HTTP Requests
 
+- Let's make HTTP requests from Node apps!
+- This is how we talk to the outside world
+  - Emails, texts, etc. all do http
+  - Send a request to an API that will do what we need
+  - May return data to use
+- We'll use weatherstack, a real-time weather API with some small changes from darksky as it was originally coded
+- We can make a request to the url and get data back, but they quartered the free tier, so that sucks.
+- api.weatherstack.com/current?access_key=API_KEY&query=37.8267,-122.4233
+  - Gives the API our access key and lat/lng for a request
+- Firefox parses JSON, but we can use Raw Data for the raw data
+- We can use this URL to make requests in our app.
+- He suggests using the `request` module, which is deprecated. I'd rather mess with axios...
+- `npm init -y // -y blows through default options`
+- `npm i axios`
+- He requires request, I'm going to import axios. We're gonna diverge some...
+- Can make a request to the URL and get the data back as a variable
+- `request(options, callback)`
+  - `options` is an object of options, `url` being mandatory
+  - `callback` runs with `error, response` arguments
+    - console.logging response vomits hundreds of lines of code to the terminal
+    - Really long string in it is JSON data returned
+    - Can parse data to JSON like normal data and console.log it again to get an object
+    - Lots of properties show up there, and he uses `data.current` for current weather data
+
 ### 032 - Customizing HTTP Requests
+
+- Get request to automatically parse data, print a forecast, and explore options for API to change language and units
+- We can use the `"json": true` option to get request to parse JSON for us
+- Forecast is a different URL
+- Other options are detailed in the API
 
 ### 033 - An HTTP Request Challenge
 
@@ -898,6 +978,8 @@ fs.writeFileSync(`notes.txt`, `This file was created by Node.js!`)
 ### 040 - Destructuring and Property Shorthand Challenge
 
 ### 041 - Bonus: HTTP Requests Without a Library
+
+---
 
 ## Section 7: Web Severs
 

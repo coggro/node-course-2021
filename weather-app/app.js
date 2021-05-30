@@ -1,11 +1,9 @@
-console.log(`Starting`)
+import request from 'request'
+import mock from './mock.json'
 
-setTimeout(() => {
-  console.log(`Time Out 1`)
-}, 2000)
+const url = `http://api.weatherstack.com/current?access_key=37fed71c74e1f5c33dd15c4f2596db33&query=37.8267,-122.4233`
 
-setTimeout(() => {
-  console.log(`Time Out 2`)
-}, 0)
-
-console.log(`Stopping`)
+request({ url: url }, (error, response) => {
+  const data = JSON.parse(response.body)
+  console.log(data.current)
+})
