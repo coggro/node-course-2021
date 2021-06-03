@@ -1,0 +1,39 @@
+{
+  "request": {
+    "type": "LatLon",
+    "query": "Lat 37.83 and Lon -122.42",
+    "language": "en",
+    "unit": "f"
+  },
+  "location": {
+    "name": "North Beach",
+    "country": "United States of America",
+    "region": "California",
+    "lat": "37.806",
+    "lon": "-122.411",
+    "timezone_id": "America/Los_Angeles",
+    "localtime": "2021-06-02 16:08",
+    "localtime_epoch": 1622650080,
+    "utc_offset": "-7.0"
+  },
+  "current": {
+    "observation_time": "11:08 PM",
+    "temperature": 64,
+    "weather_code": 116,
+    "weather_icons": [
+      "https://assets.weatherstack.com/images/wsymbols01_png_64/wsymbol_0002_sunny_intervals.png"
+    ],
+    "weather_descriptions": ["Partly cloudy"],
+    "wind_speed": 23,
+    "wind_degree": 300,
+    "wind_dir": "WNW",
+    "pressure": 1012,
+    "precip": 0,
+    "humidity": 58,
+    "cloudcover": 25,
+    "feelslike": 64,
+    "uv_index": 5,
+    "visibility": 10,
+    "is_day": "yes"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "type": "FeatureCollection",
+  "query": ["los", "angeles"],
+  "features": [
+    {
+      "id": "place.6694790146427640",
+      "type": "Feature",
+      "place_type": ["place"],
+      "relevance": 1,
+      "properties": { "wikidata": "Q65" },
+      "text_en": "Los Angeles",
+      "language_en": "en",
+      "place_name_en": "Los Angeles, California, United States",
+      "text": "Los Angeles",
+      "language": "en",
+      "place_name": "Los Angeles, California, United States",
+      "bbox": [
+        -118.521476933898, 33.9018943961945, -118.126644633049, 34.1614409628202
+      ],
+      "center": [-118.2439, 34.0544],
+      "geometry": { "type": "Point", "coordinates": [-118.2439, 34.0544] },
+      "context": [
+        {
+          "id": "district.9101022958465270",
+          "wikidata": "Q104994",
+          "text_en": "Los Angeles County",
+          "language_en": "en",
+          "text": "Los Angeles County",
+          "language": "en"
+        },
+        {
+          "id": "region.9803118085738010",
+          "wikidata": "Q99",
+          "short_code": "US-CA",
+          "text_en": "California",
+          "language_en": "en",
+          "text": "California",
+          "language": "en"
+        },
+        {
+          "id": "country.19678805456372290",
+          "wikidata": "Q30",
+          "short_code": "us",
+          "text_en": "United States",
+          "language_en": "en",
+          "text": "United States",
+          "language": "en"
+        }
+      ]
+    }
+  ],
+  "attribution": "NOTICE: © 2021 Mapbox and its suppliers. All rights reserved. Use of this data is subject to the Mapbox Terms of Service (https://www.mapbox.com/about/maps/). This response and the information it contains may not be retained. POI(s) provided by Foursquare."
+}

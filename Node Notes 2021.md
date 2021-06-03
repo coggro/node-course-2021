@@ -943,8 +943,7 @@ fs.writeFileSync(`notes.txt`, `This file was created by Node.js!`)
 - We can use this URL to make requests in our app.
 - He suggests using the `request` module, which is deprecated. I'd rather mess with axios...
 - `npm init -y // -y blows through default options`
-- `npm i axios`
-- He requires request, I'm going to import axios. We're gonna diverge some...
+- `npm i request`
 - Can make a request to the URL and get the data back as a variable
 - `request(options, callback)`
   - `options` is an object of options, `url` being mandatory
@@ -958,14 +957,72 @@ fs.writeFileSync(`notes.txt`, `This file was created by Node.js!`)
 
 - Get request to automatically parse data, print a forecast, and explore options for API to change language and units
 - We can use the `"json": true` option to get request to parse JSON for us
+  - app.js
+    ```js
+    request({ url: url, json: true }, (error, response) => {
+      console.log(response.body.current) // This is now an object, negating the
+      // use for the parsing step
+    })
+    ```
+- #### Challenge: Print a small forecast to the user
+  - Print: "It is currently XX degrees out. It feels like XX degrees out."
+  - Weatherstack is slightly different than darksky, so the challenge changed a bit. No big deal. It's a console log of object properties.
+- Can request different units using a `&units=f` units parameter.
 - Forecast is a different URL
+  - He suggests using the browser to find the information you want off of the JSON, using an extension like JSON Formatter
 - Other options are detailed in the API
 
 ### 033 - An HTTP Request Challenge
 
+- #### Challenge: Geocoding
+  - Fire off a new request to the URL explored in browser
+  - Have the request module parse it as JSON
+  - Print bot the latitude and longitude to the terminal
+  - Test your work
+  - `app.js`
+  ```js
+  request({ url: geoURL, json: true }, (error, response) => {
+    console.log(response.body)
+    const LAT = response.body.features[0].center[1]
+    const LON = response.body.features[0].center[0]
+    console.log(`Lat: ${LAT}, Lon: ${LON}`)
+  })
+  ```
+
 ### 034 - Handling Errors
 
+- How do we handle errors on requests?
+- We should check for an error before handling the response
+- We can check for the error in the error argument when no network exists
+  - `if (error) { print error message } else { handle result }`
+- Can also handle bad user input
+  - Bad data sends back error code, but this counts as a response
+  - Also need to look for an error code in the response
+  - add `else if (response.body.error) { handle error }`
+- #### Challenge: Geocoding error handling
+  - Setup an error handler for low-level errors
+  - Test by disabling network request and running the app
+  - Setup error handling for no matching results
+  - Test by altering the search term and running the app
+  ```js
+  // *** Geo Request ***
+  request({ url: geoURL, json: true }, (error, response) => {
+    if (error) {
+      console.log(error)
+    } else if (response.body.features.length === 0) {
+      console.log(`No results returned.`)
+    } else {
+      const LAT = response.body.features[0].center[1]
+      const LON = response.body.features[0].center[0]
+      console.log(`Lat: ${LAT}, Lon: ${LON}`)
+    }
+  })
+  ```
+
 ### 035 - The Callback Function
+
+- Callbacks are the root of async JS
+- Let's work in `/playground/4-callbacks.js`
 
 ### 036 - Callback Abstraction
 
