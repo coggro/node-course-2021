@@ -1024,6 +1024,83 @@ fs.writeFileSync(`notes.txt`, `This file was created by Node.js!`)
 - Callbacks are the root of async JS
 - Let's work in `/playground/4-callbacks.js`
 
+  ```js
+  // First argument is a callback fx, a function that is passed as an
+  // argument to be called later on. setTimeOut is async, but the
+  // callback pattern is not necessarily async.
+  setTimeout(() => {
+    console.log(`Two seconds are up`)
+  }, 2000)
+
+  // This is a synchronous callback pattern
+  const names = [`andrew`, `jen`, `jess`]
+  const shortNames = names.filter((name) => {
+    return name.length <= 4
+  })
+  ```
+
+- Now how about `app.js`?
+  - What if we had 4 places to geocode?
+  - Would need to copy code and put in several places
+  - Could create a geocode fx with code inside
+- Return to `/playground/4-callbacks.js`
+
+  ```js
+  const geocode = (address, callback) => {
+    setTimeout(() => {
+      // mock data
+      // when inside setTimeout, it messes with console.log sync code
+      const data = {
+        latitude: 0,
+        longitude: 0,
+      }
+      // return data
+
+      // can instead use the callback on the data
+      callback(data)
+    }, 2000)
+
+    // could return here, or could do callback
+    // sans callback, not async
+    // return data
+  }
+
+  // Sans callback, not async
+  // Not actually useful when we use async callback
+  // const data = geocode(`Philadelphia`)
+  // console.log(data)
+
+  // can then use the callback to process the data
+  geocode(`Philadelphia`, (data) => {
+    console.log(data)
+  })
+  ```
+
+- #### Challenge:
+
+  - links.mead.io/callback
+  - Take code and paste in, comment everything else out
+
+  ```js
+  //
+  // Goal: Mess around with the callback pattern
+  //
+  // 1. Define an add function that accepts the correct arguments
+  // 2. Use setTimeout to simulate a 2 second delay
+  // 3. After 2 seconds are up, call the callback function with the sum
+  // 4. Test your work!
+
+  const add = (num, ber, callback) => {
+    setTimeout(() => {
+      callback(num + ber)
+    }, 2000)
+  }
+
+  add(1, 4, (sum) => {
+    console.log(sum) // Should print: 5
+  })
+  ```
+
 ### 036 - Callback Abstraction
 
 ### 037 - Callback Abstraction Challenge
