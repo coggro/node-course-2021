@@ -1103,29 +1103,461 @@ fs.writeFileSync(`notes.txt`, `This file was created by Node.js!`)
 
 ### 036 - Callback Abstraction
 
+- We're going to create a real HTTP request in the fx
+- We can make the code maintainable and sequential
+- We should have two discrete fxs for each thing we're trying to do
+- We'll convert geocode and weather (challenge) to functions
+- `/weather-app/app.js`
+
+  ```js
+  ...
+  import geocode from './utils/geocode.js'
+  ...
+  geocode(`120 Holly Dr, Hatboro, PA, 19040`, (err, data) => {
+    console.log(`Error`, err)
+    console.log(`Data`, data)
+  })
+  ```
+
+- `/weather-app/utils/geocode.js`
+
+  ```js
+  import request from `request`
+
+  import { mapboxKey } from '../keys.js`
+
+  const geocode = (address, callback) => {
+    const geoURL = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+      address
+    )}.json?access_token=${mapboxKey}&limit=1&language=en`
+
+    request({ url: geoURL, json: true }, (err, res) => {
+      if (err) {
+        callback(`Unable to connect to location services.`, undefined)
+      } else if (res.body.features.length === 0) {
+        callback(`Unable to find location. Try another search.`)
+      } else {
+        callback(undefined, { // these are wrong, swap the lat and long indices
+          latitude: res.body.features[0].center[0],
+          longitude: res.body.features[0].center[1],
+          location: res.body.features[0].place_name,
+        })
+      }
+    })
+  }
+
+  export default geocode
+  ```
+
 ### 037 - Callback Abstraction Challenge
+
+- We'll do what we did for geocode for the weather call. We can remove previous code.
+- links.mead.io/forecast
+
+  ```js
+  //
+  // Goal: Create a reusable function for getting the forecast
+  //
+  // 1. Setup the "forecast" function in utils/forecast.js
+  // 2. Require the function in app.js and call it as shown below
+  // 3. The forecast function should have three potential calls to callback:
+  //    - Low level error, pass string for error
+  //    - Coordinate error, pass string for error
+  //    - Success, pass forecast string for data (same format as from before)
+
+  forecast(-75.7088, 44.1545, (error, data) => {
+    console.log('Error', error)
+    console.log('Data', data)
+  })
+  ```
+
+- `/weather-app/utils/forecast.js`
+
+  ```js
+  import request from 'request'
+
+  import { weatherstackKey } from '../keys.js'
+
+  const forecast = (latitude, longitude, callback) => {
+    const forecastURL = `http://api.weatherstack.com/current?access_key=${weatherstackKey}&query=${longitude},${latitude}&units=f`
+
+    request({ url: forecastURL, json: true }, (err, res) => {
+      if (err) {
+        callback(`Unable to connect to forecast services.`, undefined)
+      } else if (res.body.error) {
+        callback(res.body.error.info, undefined)
+      } else {
+        callback(
+          undefined,
+          `${res.body.current.weather_descriptions}. It is currently ${res.body.current.temperature} degrees out. It feels like ${res.body.current.feelslike} degrees out.`
+        )
+      }
+    })
+  }
+
+  export default forecast
+  ```
+
+- `/weather-app/app.js`
+
+  ```js
+  import forecast from './utils/forecast.js'
+  import geocode from './utils/geocode.js'
+
+  geocode(`120 Holly Dr, Hatboro, PA, 19040`, (err, data) => {
+    console.log(`Error`, err)
+    console.log(`Data`, data)
+  })
+
+  forecast(-75.7088, 44.1545, (error, data) => {
+    console.log('Error', error)
+    console.log('Data', data)
+  })
+  ```
+
+- I got it almost spot-on. He just used a different error message in the middle. That's pretty cool, but also expected since I have 5 years experience in web dev...
 
 ### 038 - Callback Chaining
 
+- Let's learn how to chain callbacks
+- We have two async functions operating independent of one another
+- If we chain them, we can do one and then the next.
+- `/weather-app/app.js`
+
+  ```js
+  import forecast from './utils/forecast.js'
+  import geocode from './utils/geocode.js'
+  // refactor data vars
+  geocode(`120 Holly Dr, Hatboro, PA, 19040`, (err, geoData) => {
+    if (err) {
+      // return to leave fx and stop executing code
+      return console.log(error)
+    }
+    forecast(geoData.latitude, geoData.longitude, (err, forecastData) => {
+      if (err) {
+        return console.log(err)
+      }
+      console.log(geoData.location)
+      console.log(forecastData)
+    })
+  })
+  ```
+
+- #### Challenge: Accept location via CLI arg
+
+  - Access the CLI arg without args
+  - Use the string value as the input for geocode
+  - Only geocode if a location was provided
+  - Test your work with a couple locations
+
+- `/weather-app/app.js`
+
+  ```js
+  import forecast from './utils/forecast.js'
+  import geocode from './utils/geocode.js'
+  // get location from arguments
+  const location = process.argv[2]
+  // if it exists, do the things
+  if (location) {
+    geocode(location, (err, geoData) => {
+      if (err) {
+        return console.log(error)
+      }
+      forecast(geoData.latitude, geoData.longitude, (err, forecastData) => {
+        if (err) {
+          return console.log(err)
+        }
+        console.log(geoData.location)
+        console.log(forecastData)
+      })
+    })
+  } else {
+    console.log(`Please provide a location in the CLI args.`)
+  }
+  ```
+
 ### 039 - ES6 Aside: Object Property Shorthand and Destructuring
+
+- This video is about ES6 features with objects
+- create `/playground/5-es6-objects.js`
+
+  ```js
+  // Object property shorthand
+  const name = `Corey`
+  const userAge = 31
+
+  // properties defined by variables of the same name can just get passed in
+  const user = {
+    name,
+    userAge, // have to use userAge, not age - name must match exactly
+    location: `Philadelphia`,
+  }
+
+  console.log(user)
+
+  // Object destructuring
+  const product = {
+    label: `Red Notebook`,
+    price: 3,
+    stock: 201,
+    salePrice: undefined,
+  }
+
+  // Destructure properties off of the object...
+  // You can make new names using the : name syntax used for label here
+  // Can set default values as with rating
+  const { label: productLabel, price, stock, salePrice, rating = 5 } = product
+  // ...for use here
+  console.log(label, price, stock, salePrice)
+
+  // Can destructure it inline as well, like in fx definitions
+  const transaction = (type, { label, stock }) => {
+    console.log(type, label, stock)
+  }
+
+  transaction(`order`, product)
+  ```
 
 ### 040 - Destructuring and Property Shorthand Challenge
 
+#### Challenge: Use both destructuring and property shorthand in weather app
+
+- Use destructuring in app.js, forecast.js, and geocode.js
+- Use property shorthand in forecast.js and geocode.js
+- Test your work and ensure the app still works
+
+  ```js
+  // app.js
+  ...
+  // destructure geoData, remove need for geoData object references
+  geocode(location, (err, { latitude, longitude, location } = {})
+  ...
+
+  // forecast.js
+  ...
+  // destructure body for ease of use or w/e?
+  request({ url, json: true }, (err, { body }) => {
+  ...
+  // This was, I think, way more sensible
+  const { weather_descriptions, temperature, feelslike } = body.current
+  ...
+
+  // geocode.js
+  ...
+  // body again
+  request({ url, json: true }, (err, { body }) => {
+  ...
+  // I still think this is better.
+  const { center, place_name } = body.features[0]
+  ```
+
 ### 041 - Bonus: HTTP Requests Without a Library
+
+- Can do requests without request or a library, but they're a bit harder
+- We can use modules Node provides
+- This is an optional video
+- We're going to use the HTTP and HTTPS
+  - Yeah, it's annoying that there are separate modules. `request` abstracts this out.
+  - Can use these to make new servers or make requests to existing servers
+- `/playground/6-raw-http.js`
+
+  ```js
+  import http from 'http'
+
+  import { weatherstackKey } from '../weather-app/keys.js'
+
+  const url = `http://api.weatherstack.com/current?access_key=${weatherstackKey}&query=40,-75&units=f`
+
+  let request = http.request(url, (res) => {
+    let data = ``
+
+    res.on(`data`, (chunk) => {
+      data += chunk.toString()
+      console.log(data + `\n\n`)
+    })
+
+    res.on(`end`, () => {
+      const body = JSON.parse(data)
+      console.log(body)
+    })
+  })
+
+  request.on(`error`, (error) => {
+    console.log(`Error: `, error)
+  })
+
+  request.end()
+  ```
+
+- This is kind of a PITA.
+- It's better to use a library.
 
 ---
 
-## Section 7: Web Severs
+## Section 7: Web Servers
 
-### 042 - Section Intro: Web Servers
+### 042 - Section Intro: Web Servers (Weather App)
+
+- We're going to make web servers
+- More available than a CLI
+- We'll be using Express, the most popular web server out there
+- Build a server, serve up assets, HTML, CSS, JS, JSON data, etc.
 
 ### 043 - Hello Express!
 
+- We'll create our first Node server
+- Now we can get a URL up to interact with the app
+- We'll start with a server, then move to APIs
+- Expressjs.com has docs and such
+- Let's get a basic server up and running
+- create `/web-server` at base of course folder
+- Enter, npm init -y, npm i express
+- Will also be using a `src` dir for first time here
+- `/src/app.js`
+
+  ```js
+  // import express
+  import express from 'express'
+
+  // call express to start server
+  const app = express()
+
+  // .get takes route and fx for what to do
+  // args are req object and res object
+  app.get(`/`, (req, res) => {
+    // Send something back to user
+    res.send(`Hello express!`)
+  })
+
+  app.get(`/help`, (req, res) => {
+    res.send(`Help has arrived!`)
+  })
+
+  // Set the server to listen on a prescribed port
+  app.listen(`3000`)
+  ```
+
+- App will continue running until stopped because it's built to do so
+- Can use `nodemon` to update on changes
+- Can use `localhost:3000` to hit the site
+- Routes that aren't built will 404, but we can do that later
+- #### Challenge: Setup two new routes
+
+  - Set up an about route and render a page title
+  - Set up a weather route and render a page title
+  - Test your work by visiting both in the browser
+
+  ```js
+  app.get(`/about`, (req, res) => {
+    res.send(`About the app.`)
+  })
+
+  app.get(`/weather`, (req, res) => {
+    res.send(`It will rain until this message changes.`)
+  })
+  ```
+
 ### 044 - Serving up HTML and JSON
+
+- We have a server and routes set up
+- We're more likely to send back HTML/JSON over strings
+- We'll just change what we send in send()
+- Can just put HTML in the string we send and it'll get wrapped in base tags
+- Can send JSON by just sending an object or array
+- #### Challenge: Update routes
+  - Set up about route to render a title with HTML
+  - Set up weather to send back JSON response
+    - Use dummy object with forecast and location strings.
+  - Test your work by visiting both in the browser
+- `/web-server/src/app.js`
+
+  ```js
+  // import express
+  import express from 'express'
+
+  // call express to start server
+  const app = express()
+
+  // .get takes route and fx for what to do
+  // args are req object and res object
+  app.get(`/`, (req, res) => {
+    // Send something back to user
+    res.send(`<h1>Weather</h1>`)
+  })
+
+  app.get(`/help`, (req, res) => {
+    res.send({
+      name: `Corey`,
+      age: 31,
+    })
+  })
+
+  app.get(`/about`, (req, res) => {
+    res.send(`<h1>About the App</h1>`)
+  })
+
+  app.get(`/weather`, (req, res) => {
+    res.send({
+      forecast: `The weather forecast is that there will be weather whether or not you can weather it.`,
+      location: `Hatboro, PA`,
+    })
+  })
+
+  // Set the server to listen on a prescribed port
+  app.listen(`3000`)
+  ```
+
+- It'd be nice to just serve up an HTML file...
 
 ### 045 - Serving up Static Assets
 
+- We've been messing with servers for a bit...
+- It'd be great if we could send back an HTML file
+- Let's configure Express to serve up an assets directory - `/web-server/public`
+- Add an `index.html` in `public`
+- We need an absolute path to the public folder.
+
+  ```js
+  // import express
+  import express from 'express'
+  import path from 'path'
+
+  // modules workaround
+  // requires path as well, but not doubly imported
+  import { fileURLToPath } from 'url'
+  const __filename = fileURLToPath(import.meta.url)
+  const __dirname = path.dirname(__filename)
+  // end workaround
+
+  // gets the directory the filename lives in
+  // console.log(`__dirname`, __dirname)
+  // gets the same path with filename and extension
+  // console.log(`__filename`, __filename)
+  // gets the path for the public folder
+  // console.log(`joined path`, path.join(__dirname, `..`, `/public`))
+
+  // call express to start server
+  const app = express()
+
+  app.use(express.static(path.join(__dirname, `..`, `/public`)))
+  ...
+  ```
+
+- Since index.html has special meaning, it overrides the route we built
+- Express returns when it hits something that fits, then not anything after
+- #### Challenge: Create two more HTML files
+  - Create an HTML page for about
+  - Create an HTML page for help
+  - Remove the old route handlers
+  - Test your work
+  ***
+  - Easy enough, just set up the pages (I made folders with index.html pages) and remove the routes.
+
 ### 046 - Serving Up CSS, JS, Images, and More
+
+- Let's add CSS, JS, Images, etc.
+- We can add CSS like normal. Add files, reference them as you do on a server, and it works.
+- It all works like this.
 
 ### 047 - Dynamic Pages with Templating
 
@@ -1141,19 +1573,23 @@ fs.writeFileSync(`notes.txt`, `This file was created by Node.js!`)
 
 ## Section 8: Accessing API from Browser (Weather App)
 
-### 053 -
+### 053 - Section Intro: Accessing API from Browser
 
-### 054 -
+### 054 - The Query String
 
-### 055 -
+### 055 - Building a JSON HTTP Endpoint
 
-### 056 -
+### 056 - ES6 Aside: Default Function Parameters
 
-### 057 -
+### 057 - Browser HTTP Requests with Fetch
 
-### 058 -
+### 058 - Creating a Search Form
 
-### 059 -
+### 059 - Wiring up the User Interface
+
+---
+
+## Section 9: Application Deployment (Weather App)
 
 ### 060 -
 
@@ -1232,6 +1668,10 @@ fs.writeFileSync(`notes.txt`, `This file was created by Node.js!`)
 ### 097 -
 
 ### 098 -
+
+### 099 -
+
+### 100 -
 
 ### 101 -
 
