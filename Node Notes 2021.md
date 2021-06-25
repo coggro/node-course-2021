@@ -1561,6 +1561,55 @@ fs.writeFileSync(`notes.txt`, `This file was created by Node.js!`)
 
 ### 047 - Dynamic Pages with Templating
 
+- We have a static site. We want dynamic content!
+- We're going to set up Handlebars!
+  - Get dynamic documents
+  - Create reusable code across pages
+- `npm i hbs`
+  - handlebars server
+  - easy to use with a server like Express
+- `` app.set(`view engine`, `hbs`) ``
+  - Adds `hbs` as view engine
+  - Expects views to be stored in `/web-server/views` directory
+- `/web-server/views/index.hbs`
+
+  ```js
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Document</title>
+      <link rel="stylesheet" href="/styles/styles.css" />
+    </head>
+    <body>
+      <h1>{{ title }}</h1>
+      <p>{{ name }}</p>
+
+      <script src="/scripts/script.js"></script>
+    </body>
+  </html>
+  ```
+
+- `/web-server/app.js`
+
+  ```js
+  app.get(``, (req, res) => {
+    // first arg is view to render
+    // second arg is dynamic values to pass
+    res.render(`index`, {
+      title: `Weather App`,
+      name: `Corey Gross`,
+    })
+  })
+  ```
+
+- Similarly replace title and add a `Created By {{name}}` line for an About template.
+- #### Challenge: Create a template for /help
+  - Set up a help template to render a help message to the screen
+  - Set up the help route and render the template with an example message
+  - Visit the route in the browser and see your help message print
+
 ### 048 - Customizing the Views Directory
 
 ### 049 - Advanced Templating

@@ -1,5 +1,4 @@
 import request from 'request'
-
 import { weatherstackKey } from '../keys.js'
 
 const forecast = (latitude, longitude, callback) => {

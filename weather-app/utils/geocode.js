@@ -1,5 +1,4 @@
 import request from 'request'
-
 import { mapboxKey } from '../keys.js'
 
 const geocode = (address, callback) => {

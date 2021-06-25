@@ -1,18 +1,42 @@
 // import express
 import express from 'express'
 import path from 'path'
-
 // modules workaround
 // requires path as well, but not doubly imported
 import { fileURLToPath } from 'url'
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+
+const __filename = fileURLToPath(import.meta.url),
+  __dirname = path.dirname(__filename),
+  publicDirectoryPath = path.join(__dirname, `..`, `/public`)
+
 // end workaround
 
 // call express to create server
 const app = express()
 
-app.use(express.static(path.join(__dirname, `..`, `/public`)))
+app.set(`view engine`, `hbs`)
+app.use(express.static(publicDirectoryPath))
+
+app.get(``, (req, res) => {
+  res.render(`index`, {
+    title: `Weather App`,
+    name: `Corey Gross`,
+  })
+})
+
+app.get(`/about`, (req, res) => {
+  res.render(`about`, {
+    title: `About`,
+    name: `Corey Gross`,
+  })
+})
+
+app.get(`/help`, (req, res) => {
+  res.render(`help`, {
+    title: `Help`,
+    message: `This is a help message`,
+  })
+})
 
 app.get(`/weather`, (req, res) => {
   res.send({

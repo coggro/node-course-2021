@@ -1,8 +1,6 @@
-import chalk from 'chalk'
-import fs from 'fs'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
-import { addNote, removeNote, listNotes, readNote } from './notes.js'
+import { addNote, listNotes, readNote, removeNote } from './notes.js'
 
 // add, remove, read, list
 
