@@ -1612,9 +1612,50 @@ fs.writeFileSync(`notes.txt`, `This file was created by Node.js!`)
 
 ### 048 - Customizing the Views Directory
 
+- Let's customize how HBS is set up
+- We can change the location and name of the views dir
+- Renaming to `templates` and refreshing any page shows why this sucks
+- add `` viewsPath = path.join(__dirname, `../templates`) `` as a const to the app.js, use it in `` app.set(`views`, viewsPath) ``
+
 ### 049 - Advanced Templating
 
+- Let's learn partials!
+- Little templates that are parts of the webpage, like the header or footer.
+- Gives a unified look without copying markup
+- We'll load up hbs for the first time and work with it
+- We're going to put our views in `/templates/views` and tell Node how that works by updating the path
+- We'll add `/templates/partials`, a const for its path, and set it up with hbs using `hbs.registerPartials(partialsPath)`
+- `/templates/partials/header.hbs`
+  ```jsx
+  <h1>Static Header.hbs Text</h1>
+  ```
+- Can load in on other pages using `{{>partial}}` syntax
+- Nodemon won't load unless we adjust our nodemon call to `nodemon src/app.js -e js,hbs`
+- Can replace static headers with header partial
+- Can reference variables in the partial just like in normal templates
+- #### Challenge: Create a partial for the footer
+  - Set up the template for the footer partial "Created by Some Name"
+  - Render the partial at the bottom of all three pages
+  - Test your work by visiting all three pages
+  - **This is really just repetition.**
+
 ### 050 - 404 Pages
+
+- How do we set up a 404?
+- `` app.get(`*`, ...) `` as last route
+  - Express looks for matches in order listed. First, it looks for static pages. Then at our routes, including our final wildcard route.
+- We can add subroutes, too.
+- Something like this will work above the full wildcard:
+  ```js
+  app.get(`/help/*`, (req, res) => {
+    res.send(`help article not found`)
+  })
+  ```
+- #### Challenge: Create and render a 404 page with HBS
+  - Set up template to render header and footer
+  - Set up template to render an error message
+  - Render the template for both 404 routes
+  - Test your work. Visit /what and /help/units
 
 ### 051 - Styling the Application: Part I
 
