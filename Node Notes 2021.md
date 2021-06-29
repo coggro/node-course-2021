@@ -1659,17 +1659,132 @@ fs.writeFileSync(`notes.txt`, `This file was created by Node.js!`)
 
 ### 051 - Styling the Application: Part I
 
+- Let's style things!
+- We'll focus on styles.css and index.hbs
+- There's a lesson in here on styling, and the site gets styled
+
 ### 052 - Styling the Application: Part II
+
+- Flexbox sticky footer
+- Andrew's bad at proper HTML
+- Adds favicons and titles for pages
 
 ## Section 8: Accessing API from Browser (Weather App)
 
 ### 053 - Section Intro: Accessing API from Browser
 
+- We'll learn how to make an API and access it from the browser
+
 ### 054 - The Query String
+
+- Query string lives as an object in req.query -`app.js`
+
+```js
+app.get(`/products`, (req, res) => {
+  if (!req.query.search) {
+    return res.send({
+      error: `You must provide a search term`,
+    })
+  }
+  res.send({
+    products: [],
+  })
+})
+```
+
+- #### Challenge: Update weather endpoint to accept address
+
+  - No address? Send an error message
+  - Address? Send back the static JSON
+    - Add address property onto JSON with the address
+  - Test /weather and /weather?address=philadelphia
+
+  ```js
+  app.get(`/weather`, (req, res) => {
+    if (!req.query.address) {
+      return res.send({
+        error: `You must provide a location.`,
+      })
+    }
+    res.send({
+      forecast: `The weather forecast is that there will be weather whether or not you can weather it.`,
+      location: req.query.address,
+    })
+  })
+  ```
 
 ### 055 - Building a JSON HTTP Endpoint
 
+- Let's finalize the weather endpoint
+- We have the geocode and weather code from weather-app
+- We'll grab entire `utils` folder
+- We'll also need to install `request`
+- #### Challenge: Wire up /weather
+
+  - Require geocode/forecast into app.js
+  - Use the address to geocode
+  - Use the coordinates to get forecast
+  - Send back the real forecast and location
+  - `app.js`
+
+  ```js
+  app.get(`/weather`, (req, res) => {
+    if (!req.query.address) {
+      return res.send({
+        error: `You must provide a location.`,
+      })
+    }
+    geocode(req.query.address, (geoErr, geoData) => {
+      if (geoErr) {
+        return res.send({
+          error: geoErr,
+        })
+      } else {
+        forecast(
+          geoData.latitude,
+          geoData.longitude,
+          (forecastErr, forecastData) => {
+            if (forecastErr) {
+              return res.send({ error: forecastErr })
+            } else {
+              res.send({
+                forecast: forecastData,
+                location: geoData.location,
+              })
+            }
+          }
+        )
+      }
+    })
+  })
+  ```
+
+- Data returned:
+  ```json
+  {
+    "forecast": "Partly cloudy. It is currently 81 degrees out. It feels like 86 degrees out.",
+    "location": "Philadelphia, Pennsylvania, United States"
+  }
+  ```
+
 ### 056 - ES6 Aside: Default Function Parameters
+
+- Let's look at default parameters to add a default param and fix a problem with our code
+- Playground File
+
+  ```js
+  const greeter = (name = `User`) => {
+    console.log(`Hello ${name}`)
+  }
+
+  greeter(`Andrew`)
+
+  greeter()
+  ```
+
+- He also covers destructuring with undefined items, and it errors out
+- Additionally, he uses a number where an object is expected, and shows how given params overwrite defaults
+- The problem with the server is the geocode call, where he destructured the geoData. Just add a default empty object.
 
 ### 057 - Browser HTTP Requests with Fetch
 
@@ -1681,89 +1796,101 @@ fs.writeFileSync(`notes.txt`, `This file was created by Node.js!`)
 
 ## Section 9: Application Deployment (Weather App)
 
-### 060 -
+### 060 - Section Intro: Application Deployment
 
-### 061 -
+### 061 - Joining Heroku and GitHub
 
-### 062 -
+### 062 - Version Control with Git
 
-### 063 -
+### 063 - Exploring Git
 
-### 064 -
+### 064 - Integrating Git
 
-### 065 -
+### 065 - Setting up SSH Keys
 
-### 066 -
+### 066 - Pushing Code to Github
 
-### 067 -
+### 067 - Deploying Node.js to Heroku
 
-### 068 -
+### 068 - New Feature Deployment Workflow
 
-### 069 -
+### 069 - Avoiding Global Modules
 
-### 070 -
+---
 
-### 071 -
+## Section 10: MongoDB and Promises (Task App)
 
-### 072 -
+### 070 - Section Intro: Databases and Advanced Asynchronous Development
 
-### 073 -
+### 071 - MongoDB and NoSQL Databases
 
-### 074 -
+### 072 - Installing MongoDB on MacOS and Linux
 
-### 075 -
+### 073 - Installing MongoDB on Windows
 
-### 076 -
+### 074 - Installing Database GUI Viewer
 
-### 077 -
+### 075 - Connecting and Inserting Documents
 
-### 078 -
+### 076 - Inserting Documents
 
-### 079 -
+### 077 - The ObjectID
 
-### 080 -
+### 078 - Querying Documents
 
-### 081 -
+### 079 - Promises
 
-### 082 -
+### 080 - Updating Documents
 
-### 083 -
+### 081 - Deleting Documents
 
-### 084 -
+---
 
-### 085 -
+## Section 11: REST APIs and Mongoose (Task App)
 
-### 086 -
+### 082 - Section Intro: REST APIs and Mongoose
 
-### 087 -
+### 083 - Setting up Mongoose
 
-### 088 -
+### 084 - Creating a Mongoose Model
 
-### 089 -
+### 085 - Data Validation and Sanitization: Part 1
 
-### 090 -
+### 086 - Data Validation and Sanitization: Part 2
 
-### 091 -
+### 087 - Structuring a REST API
 
-### 092 -
+### 088 - Installing Postman
 
-### 093 -
+### 089 - Resource Creation Endpoints: Part 1
 
-### 094 -
+### 090 - Resource Creation Endpoints: Part 2
 
-### 095 -
+### 091 - Resource Reading Endpoints: Part 1
 
-### 096 -
+### 092 - Resource Reading Endpoints: Part 2
 
-### 097 -
+### 093 - Promise Chaining
 
-### 098 -
+### 094 - Promise Chaining Challenge
 
-### 099 -
+### 095 - Async/Await
 
-### 100 -
+### 096 - Async/Await: Part 2
 
-### 101 -
+### 097 - Integrating Async/Await
+
+### 098 - Resource Updating Endpoints: Part I
+
+### 099 - Resource Updating Endpoints: Part 2
+
+### 100 - Resource Deleting Endpoints
+
+### 101 - Separate Route Files
+
+---
+
+## Section 12: API Authentication and Security (Task App)
 
 ### 102 -
 

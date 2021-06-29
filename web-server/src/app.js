@@ -3,6 +3,8 @@ import express from 'express'
 import hbs from 'hbs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import geocode from '../utils/geocode.js'
+import forecast from '../utils/forecast.js'
 
 // __dirname workaround and paths for express
 const __filename = fileURLToPath(import.meta.url),
@@ -47,13 +49,46 @@ app.get(`/help`, (req, res) => {
 })
 
 app.get(`/weather`, (req, res) => {
+  if (!req.query.address) {
+    return res.send({
+      error: `You must provide a location.`,
+    })
+  }
+  geocode(
+    req.query.address,
+    (geoErr, { latitude, longitude, location } = {}) => {
+      if (geoErr) {
+        return res.send({
+          error: geoErr,
+        })
+      } else {
+        forecast(latitude, longitude, (forecastErr, forecastData) => {
+          if (forecastErr) {
+            return res.send({ error: forecastErr })
+          } else {
+            res.send({
+              forecast: forecastData,
+              location: location,
+            })
+          }
+        })
+      }
+    }
+  )
+})
+
+app.get(`/products`, (req, res) => {
+  if (!req.query.search) {
+    return res.send({
+      error: `You must provide a search term`,
+    })
+  }
   res.send({
-    forecast: `The weather forecast is that there will be weather whether or not you can weather it.`,
-    location: `Hatboro, PA`,
+    products: [],
   })
 })
 
-app.get(`/about/*`, (req, res) => {
+app.get(`/help/*`, (req, res) => {
   res.render(`404`, {
     title: `404`,
     name: `Corey Gross`,
