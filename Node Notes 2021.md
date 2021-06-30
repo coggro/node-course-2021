@@ -1788,15 +1788,144 @@ app.get(`/products`, (req, res) => {
 
 ### 057 - Browser HTTP Requests with Fetch
 
+- We've got the endpoint! Let's focus on the front end...
+- How do we show the data in the browser?
+- Let's focus on `public` and `templates` in `web-server`
+- We'll fetch the forecast on `index.hbs` using `public/scripts/script.js` and the `fetch` API
+- #### Challenge: Fetch weather
+
+  - Set up a call to fetch to fetch weather for Boston
+  - Get the parsed JSON response
+    - If it has an error, print the error
+    - If not, print location and forecast
+  - Refresh the browser and test your work
+
+  ```js
+  console.log(`script.js begin`)
+
+  const puzzle = `http://puzzle.mead.io/puzzle`,
+    weather = `/weather?address=Boston`
+
+  fetch(puzzle).then((response) => {
+    response.json().then((data) => {
+      console.log(data)
+    })
+  })
+
+  // Fetch at the URL, then() structure is promise
+  // this then has a response, which we then use...
+  fetch(weather).then((response) => {
+    // ...after we jsonify it...
+    response.json().then((data) => {
+      // ... to do our application logic
+      if (data.error) {
+        return console.log(data.error)
+      }
+      return console.log(data)
+    })
+  })
+
+  console.log(`script.js end`)
+  ```
+
 ### 058 - Creating a Search Form
 
+- We'll create a search form
+- `index.hbs`
+  ```html
+  <form>
+    <input type="text" placeholder="Location" />
+    <button>Search</button>
+  </form>
+  ```
+- `script.js`
+
+  ```js
+  const weatherForm = document.querySelector(`form`),
+    search = document.querySelector(`input`)
+
+  weatherForm.addEventListener(`submit`, (e) => {
+    e.preventDefault()
+    if (search.value === '') {
+      console.log(`Must provide a location.`)
+    } else {
+      console.log(search.value)
+      const weather = `/weather?address=${search.value}`
+      fetch(weather).then((response) => {
+        response.json().then((data) => {
+          if (data.error) {
+            return console.log(data.error)
+          } else {
+            console.log(data.location)
+            console.log(data.forecast)
+          }
+        })
+      })
+    }
+  })
+  ```
+
 ### 059 - Wiring up the User Interface
+
+- Let's get the messages from the console into the browser
+- Let's provide a place to put them: two new paragraphs
+- #### Challenge: Render content to paragraphs
+
+  - Select the second message p from JS
+  - Just before fetch, render loading message and empty p
+  - If error, render error
+  - If no error, render location and forecast.
+  - Test your work!
+
+  ```js
+  console.log(`script.js begin`)
+
+  const weatherForm = document.querySelector(`form`),
+    search = document.querySelector(`input`),
+    messageOne = document.getElementById(`messageOne`),
+    messageTwo = document.getElementById(`messageTwo`)
+
+  weatherForm.addEventListener(`submit`, (e) => {
+    e.preventDefault()
+    messageOne.textContent = `Loading...`
+    messageTwo.textContent = ``
+    if (search.value === '') {
+      console.log(`Must provide a location.`)
+    } else {
+      console.log(search.value)
+      const weather = `/weather?address=${search.value}`
+      fetch(weather).then((response) => {
+        response.json().then((data) => {
+          if (data.error) {
+            messageOne.textContent = data.error
+            return console.log(data.error)
+          } else {
+            console.log(data.location)
+            console.log(data.forecast)
+            messageOne.textContent = data.location
+            messageTwo.textContent = data.forecast
+          }
+        })
+      })
+    }
+  })
+
+  console.log(`script.js end`)
+  ```
+
+- Add a few styles and we're done
+- Let's learn to deploy so other people can use our apps!
 
 ---
 
 ## Section 9: Application Deployment (Weather App)
 
 ### 060 - Section Intro: Application Deployment
+
+- Right now, it runs locally. Great! But no one can use it.
+- Let's deploy it publicly.
+- We'll use git, GitHub, and Heroku
+- He talks about git and GitHub, along with tours.
 
 ### 061 - Joining Heroku and GitHub
 
