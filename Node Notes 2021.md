@@ -1952,6 +1952,14 @@ app.get(`/products`, (req, res) => {
 
 ### 064 - Integrating Git
 
+- We'll add git to the web server
+- `git init` in `web-server`
+- Explains `repositories/repos`
+- Explains VSCode git support and `.git` being a hidden dir and how it should never be touched
+- Explains `.gitignore` for `node_modules`
+- `git add .`
+- `git commit -m "Initial Commit"`
+
 ### 065 - Setting up SSH Keys
 
 ### 066 - Pushing Code to Github
