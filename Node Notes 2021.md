@@ -1925,13 +1925,30 @@ app.get(`/products`, (req, res) => {
 - Right now, it runs locally. Great! But no one can use it.
 - Let's deploy it publicly.
 - We'll use git, GitHub, and Heroku
-- He talks about git and GitHub, along with tours.
 
 ### 061 - Joining Heroku and GitHub
 
+- He talks about git, GitHub, and Heroku, along with tours.
+- We should install heroku CLI tools
+- Heroku commands
+  - heroku -v // Get version
+  - heroku login // link to account
+  - I have accounts and am used to both services, so the next two videos are probably not super useful
+
 ### 062 - Version Control with Git
 
+- Heroku needs access to code to deploy, and GitHub needs it to exist
+- We'll use git as our VCS
+- He talks about the value of VCS
+- Install git.
+
 ### 063 - Exploring Git
+
+- Shows a basic flow of how git works with tracked, unstaged, staged, and commited changes
+- All new files are untracked.
+- Staged changes are prepared to be committed
+- Commited changes are added to the repo
+- Unstaged changes are changes on tracked/committed files
 
 ### 064 - Integrating Git
 
